@@ -23,7 +23,7 @@ int compareParams(int prev, int curr)
     return PARAMETER_DECREASE;
   }
   
-  if(prev - curr < STEADY_DELTA) {
+  if(curr - prev > STEADY_DELTA) {
     return PARAMETER_INCREASE;
   }
   

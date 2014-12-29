@@ -1,0 +1,26 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "alex.kazaev@gmail.com",
+    "longName": "Rope Jumping",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/rope.png",
+                "menuIcon": true,
+                "name": "rope_menu_icon",
+                "type": "png"
+            }
+        ]
+    },
+    "shortName": "Rope Jumping",
+    "uuid": "62abc6e1-2c0e-43cd-ace7-86a76b9dd78a",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}

@@ -1,50 +1,32 @@
+/* jumper.c -- jump counting watch app for pebble
+ *
+ * Copyright (C) 2014 Alex Kazaiev
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 #include "pebble.h"
+#include "measurementAnalyzer.h"
+// Delay between measurements
 #define ACCEL_STEP_MS 50
 
 static Window *window;
 
-static GRect window_frame;
+//static GRect window_frame;
 static TextLayer *text_layer;
 static int i;
-static int prevx = -1, prevprevx = -1, x = -1;
-static uint64_t prevtime = 0;
-static int jumptime = 1;
-
-
-
 static AppTimer *timer;
 
 static void timer_callback(void *data) {
   AccelData accel = (AccelData) { .x = 0, .y = 0, .z = 0 };
   accel_service_peek(&accel);
+  
   char* str;
-  prevprevx = prevx;
-  prevx = x;
-  x = accel.x;
-  if(prevprevx != -1)
-    {
-      if(prevx >= 1400 && prevprevx - prevx >= 0 && x - prevx <= 0)
-      {
-        i++;
-        if(prevtime != 0)
-          {
-           jumptime = accel.timestamp - prevtime;
-          }
-        prevtime = accel.timestamp;
-      }
-  }
-  
+  addMeasurement(accel.x, accel.y, accel.z);
   str = malloc(50);
-  
-  if(jumptime > 1)
-    {
-  snprintf(str, 50, "%d\n%d jmp/min", i, 60000 / jumptime);
-  }
-  else
-    {
-    snprintf(str, 50, "%d\n [X] jmp/min", i);
-  }
-  //app_log(APP_LOG_LEVEL_DEBUG,"", 0, "%d;%d;%d" , accel.x, accel.y, accel.z);
+  snprintf(str, 50, "%d\n", i);
+  app_log(APP_LOG_LEVEL_DEBUG,"", 0, "%d;%d;%d" , accel.x, accel.y, accel.z);
   text_layer_set_text(text_layer, str);
   timer = app_timer_register(ACCEL_STEP_MS, timer_callback, NULL);
   free(str);
@@ -52,7 +34,6 @@ static void timer_callback(void *data) {
 
 void select_click_handler(ClickRecognizerRef recognizer, void *context) {
    i=0;
-  jumptime = 1;
  }
 
 void config_provider(void *context) {
@@ -60,6 +41,7 @@ void config_provider(void *context) {
  }
 
 static void init(void) {
+  initMeasurements();
   window = window_create();
   window_stack_push(window, true /* Animated */);
   window_set_background_color(window, GColorWhite);
@@ -75,6 +57,7 @@ static void init(void) {
 }
 
 static void deinit(void) {
+  deinitMeasurements();
   accel_data_service_unsubscribe();
   text_layer_destroy(text_layer);
   window_destroy(window);

@@ -1,3 +1,10 @@
+/* measurementAnalyzer.h -- analyzes the data provided by accelerometer
+ *
+ * Copyright (C) 2014 Alex Kazaiev
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 #pragma once
 #include <pebble.h>
 
